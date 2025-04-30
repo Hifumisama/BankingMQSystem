@@ -8,6 +8,7 @@ export interface IMessage {
   timestamp: Date;
   status: 'PENDING' | 'PROCESSED' | 'ERROR';
   direction: 'INBOUND' | 'OUTBOUND';
+  mqMessageId?: string; // ID du message dans IBM MQ
 }
 
 const messageSchema = new mongoose.Schema<IMessage>({
@@ -25,7 +26,8 @@ const messageSchema = new mongoose.Schema<IMessage>({
     type: String, 
     required: true,
     enum: ['INBOUND', 'OUTBOUND']
-  }
+  },
+  mqMessageId: { type: String, required: false }
 });
 
 export const Message = mongoose.model<IMessage>('Message', messageSchema); 

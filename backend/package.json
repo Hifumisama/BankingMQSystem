@@ -1,31 +1,35 @@
 {
-  "name": "backend",
+  "name": "banking-mq-system-backend",
   "version": "1.0.0",
-  "main": "src/app.ts",
+  "description": "Backend for Banking MQ System",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "node dist/app.js",
-    "dev": "nodemon src/app.ts",
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:mq": "ts-node src/scripts/test-mq.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.18.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "ibmmq": "^0.9.20",
-    "mongoose": "^8.2.0",
+    "mongoose": "^7.0.3",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.11.24",
-    "nodemon": "^3.1.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
   }
 }

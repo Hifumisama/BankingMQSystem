@@ -1,15 +1,15 @@
-import express, { Request, Response, Router } from 'express';
-import { Partner } from '../models/partner.model';
+import express from 'express';
+import { PartnerService } from '../services/partner.service';
 
-const router: Router = express.Router();
-
+const router = express.Router();
+const partnerService = new PartnerService();
 
 // Get all partners
 // Cette route permet de récupérer la liste complète des partenaires
 // Utile pour l'affichage dans l'interface utilisateur
 router.get('/', async (req, res) => {
   try {
-    const partners = await Partner.find();
+    const partners = await partnerService.getAllPartners();
     res.json(partners);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching partners', error });
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 // Get partner by id
 router.get('/:id', async (req, res) => {
   try {
-    const partner = await Partner.findOne({ id: req.params.id });
+    const partner = await partnerService.getPartnerById(req.params.id);
     if (!partner) {
       res.status(404).json({ message: 'Partner not found' });
       return;
@@ -33,41 +33,23 @@ router.get('/:id', async (req, res) => {
 // Create partner
 router.post('/', async (req, res) => {
   try {
-    const partner = new Partner(req.body);
-    const savedPartner = await partner.save();
-    res.status(201).json(savedPartner);
+    const partner = await partnerService.createPartner(req.body);
+    res.status(201).json(partner);
   } catch (error) {
     res.status(400).json({ message: 'Error creating partner', error });
   }
 });
 
-// Update partner
-router.put('/:id', async (req, res) => {
-  try {
-    const partner = await Partner.findOneAndUpdate(
-      { id: req.params.id },
-      req.body,
-      { new: true }
-    );
-    if (!partner) {
-      res.status(404).json({ message: 'Partner not found' });
-      return;
-    }
-    res.json(partner);
-  } catch (error) {
-    res.status(400).json({ message: 'Error updating partner', error });
-  }
-});
 
 // Delete partner
 router.delete('/:id', async (req, res) => {
   try {
-    const partner = await Partner.findOneAndDelete({ id: req.params.id });
-    if (!partner) {
+    const deleted = await partnerService.deletePartner(req.params.id);
+    if (!deleted) {
       res.status(404).json({ message: 'Partner not found' });
       return;
     }
-    res.json({ message: 'Partner deleted successfully' });
+    res.status(204).send();
   } catch (error) {
     res.status(500).json({ message: 'Error deleting partner', error });
   }

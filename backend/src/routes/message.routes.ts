@@ -1,7 +1,14 @@
 import express from 'express';
 import { Message } from '../models/message.model';
+import { MessageService } from '../services/message.service';
 
 const router = express.Router();
+const messageService = new MessageService();
+
+// Initialiser le service au démarrage
+messageService.initialize().catch(error => {
+  console.error('Failed to initialize message service:', error);
+});
 
 // Get all messages
 router.get('/', async (req, res) => {
@@ -16,7 +23,7 @@ router.get('/', async (req, res) => {
 // Get message by id
 router.get('/:id', async (req, res) => {
   try {
-    const message = await Message.findOne({ id: req.params.id });
+    const message = await messageService.getMessageById(req.params.id);
     if (!message) {
       res.status(404).json({ message: 'Message not found' });
       return;
@@ -27,14 +34,34 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create message
-router.post('/', async (req, res) => {
+// Send a message
+router.post('/send', async (req, res) => {
   try {
-    const message = new Message(req.body);
-    const savedMessage = await message.save();
-    res.status(201).json(savedMessage);
+    const { content, partnerId } = req.body;
+    
+    if (!content || !partnerId) {
+      res.status(400).json({ message: 'Content and partnerId are required' });
+      return;
+    }
+
+    const message = await messageService.sendMessage(content, partnerId);
+    res.status(201).json(message);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating message', error });
+    res.status(500).json({ message: 'Error sending message', error });
+  }
+});
+
+// Receive a message
+router.get('/receive', async (req, res) => {
+  try {
+    const message = await messageService.receiveMessage();
+    if (!message) {
+      res.status(204).json({ message: 'No message available' });
+      return;
+    }
+    res.json(message);
+  } catch (error) {
+    res.status(500).json({ message: 'Error receiving message', error });
   }
 });
 
@@ -43,7 +70,7 @@ router.post('/', async (req, res) => {
 // Utile pour l'historique des échanges avec un partenaire
 router.get('/partner/:partnerId', async (req, res) => {
   try {
-    const messages = await Message.find({ partnerId: req.params.partnerId });
+    const messages = await messageService.getMessagesByPartner(req.params.partnerId);
     res.json(messages);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching messages', error });
