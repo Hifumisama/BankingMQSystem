@@ -1,0 +1,20 @@
+{
+  "channel": [
+    {
+      "name": "DEV.APP.SVRCONN",
+      "clientConnection": {
+        "connection": [
+          {
+            "host": "ibmmq",
+            "port": 1414
+          }
+        ],
+        "queueManager": "QM1"
+      },
+      "transmissionSecurity": {
+        "cipherSpecification": "ANY_TLS12_OR_HIGHER"
+      },
+      "type": "clientConnection"
+    }
+  ]
+} 

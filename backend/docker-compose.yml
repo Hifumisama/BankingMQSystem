@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: banking-mongodb
+    ports:
+      - "27017:27017"
+    command: mongod --bind_ip_all
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - banking-network
+
+  ibmmq:
+    image: ibmcom/mq:latest
+    container_name: ibmmq-server
+    ports:
+      - "1414:1414"  # MQ Listener port
+      - "9443:9443"  # Web Console
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+      - MQ_ADMIN_PASSWORD=passw0rd
+      - MQ_APP_PASSWORD=passw0rd
+      - MQ_DEV=true
+      - MQ_QMGR_DEV=true
+      - MQ_QMGR_DEV_QUEUE=true
+    volumes:
+      - mqdata:/mnt/mqm
+    networks:
+      - banking-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: banking-mq-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MQ_HOST=ibmmq
+      - MQ_PORT=1414
+      - MQ_QUEUE_MANAGER=QM1
+      - MQ_CHANNEL=DEV.APP.SVRCONN
+      - MQ_USER=app
+      - MQ_PASSWORD=passw0rd
+      - MQ_CCDT_URL=file:///app/mqclient/mqclient.json
+      - MQ_SSL_CIPHER=ANY_TLS12_OR_HIGHER
+      - MONGODB_URI=mongodb://mongodb:27017/banking
+    volumes:
+      - ./src:/app/src
+      - ./dist:/app/dist
+      - ./mqclient:/app/mqclient
+    depends_on:
+      - mongodb
+      - ibmmq
+    networks:
+      - banking-network
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30
+    networks:
+      - banking-network
+
+networks:
+  banking-network:
+    driver: bridge
+
+volumes:
+  mqdata:
+  mongodb_data: 
