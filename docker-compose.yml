@@ -33,7 +33,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: banking-mq-backend
     restart: unless-stopped
@@ -51,12 +51,28 @@ services:
       - MQ_SSL_CIPHER=ANY_TLS12_OR_HIGHER
       - MONGODB_URI=mongodb://mongodb:27017/banking
     volumes:
-      - ./src:/app/src
-      - ./dist:/app/dist
-      - ./mqclient:/app/mqclient
+      - ./backend/src:/app/src
+      - ./backend/dist:/app/dist
+      - ./backend/mqclient:/app/mqclient
     depends_on:
       - mongodb
       - ibmmq
+    networks:
+      - banking-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: banking-mq-frontend
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://backend:3000
+    restart: unless-stopped
+    depends_on:
+      - backend
     networks:
       - banking-network
 
