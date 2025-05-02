@@ -27,7 +27,6 @@ export class MessageService {
       const message = new Message({
         content,
         partnerId,
-        direction: 'OUTBOUND',
         status: 'PENDING'
       });
 
@@ -45,7 +44,6 @@ export class MessageService {
       const message = new Message({
         content,
         partnerId,
-        direction: 'OUTBOUND',
         status: 'ERROR'
       });
       await message.save();
@@ -70,7 +68,6 @@ export class MessageService {
       const message = new Message({
         content,
         partnerId: 'SYSTEM', // À adapter selon votre logique métier
-        direction: 'INBOUND',
         status: 'PROCESSED'
       });
 

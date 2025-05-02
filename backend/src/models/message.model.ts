@@ -7,7 +7,6 @@ export interface IMessage {
   partnerId: string;
   timestamp: Date;
   status: 'PENDING' | 'PROCESSED' | 'ERROR';
-  direction: 'INBOUND' | 'OUTBOUND';
   mqMessageId?: string; // ID du message dans IBM MQ
 }
 
@@ -21,11 +20,6 @@ const messageSchema = new mongoose.Schema<IMessage>({
     required: true,
     enum: ['PENDING', 'PROCESSED', 'ERROR'],
     default: 'PENDING'
-  },
-  direction: { 
-    type: String, 
-    required: true,
-    enum: ['INBOUND', 'OUTBOUND']
   },
   mqMessageId: { type: String, required: false }
 });
