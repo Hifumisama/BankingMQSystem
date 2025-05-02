@@ -20,7 +20,7 @@ export class MessageService {
   }
 
   sendMessage(content: string, partnerId: string): Observable<IMessage> {
-    return this.http.post<IMessage>(this.apiUrl, { content, partnerId });
+    return this.http.post<IMessage>(`${this.apiUrl}/send`, { content, partnerId });
   }
 
   receiveMessage(): Observable<IMessage | null> {

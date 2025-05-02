@@ -6,11 +6,11 @@ import { MessageService} from '../../services/message.service';
 import { PartnerService} from '../../services/partner.service';
 import { IMessage } from '../../../../../shared/interfaces/message.interface';
 import { IPartner } from '../../../../../shared/interfaces/partner.interface';
-
+import { ButtonComponent } from '../../components/button/button.component';
 @Component({
   selector: 'app-messages',
   standalone: true,
-  imports: [CommonModule, MessageListComponent, MessageModalComponent],
+  imports: [CommonModule, MessageListComponent, MessageModalComponent, ButtonComponent],
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.scss'
 })

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { MessageService } from './message.service';
-import { Message } from './message.service';
+import { IMessage } from '@shared/interfaces/message.interface';
 
 describe('MessageService', () => {
   let service: MessageService;
@@ -26,8 +26,8 @@ describe('MessageService', () => {
   });
 
   it('should get all messages', () => {
-    const mockMessages: Message[] = [
-      { id: '1', content: 'Test message', partnerId: '1', createdAt: new Date() }
+    const mockMessages: IMessage[] = [
+      { id: '1', content: 'Test message', partnerId: '1', timestamp: new Date(), status: 'PENDING' }
     ];
 
     service.getAllMessages().subscribe(messages => {
@@ -40,11 +40,12 @@ describe('MessageService', () => {
   });
 
   it('should get message by id', () => {
-    const mockMessage: Message = {
+    const mockMessage: IMessage = {
       id: '1',
       content: 'Test message',
       partnerId: '1',
-      createdAt: new Date()
+      timestamp: new Date(),
+      status: 'PENDING'
     };
 
     service.getMessageById('1').subscribe(message => {
@@ -57,11 +58,12 @@ describe('MessageService', () => {
   });
 
   it('should send a message', () => {
-    const mockMessage: Message = {
+    const mockMessage: IMessage = {
       id: '1',
       content: 'Test message',
       partnerId: '1',
-      createdAt: new Date()
+      timestamp: new Date(),
+      status: 'PENDING'
     };
 
     service.sendMessage('Test message', '1').subscribe(message => {
@@ -75,11 +77,12 @@ describe('MessageService', () => {
   });
 
   it('should receive a message', () => {
-    const mockMessage: Message = {
+    const mockMessage: IMessage = {
       id: '1',
       content: 'Test message',
       partnerId: '1',
-      createdAt: new Date()
+      timestamp: new Date(),
+      status: 'PENDING'
     };
 
     service.receiveMessage().subscribe(message => {
@@ -92,8 +95,8 @@ describe('MessageService', () => {
   });
 
   it('should get messages by partner', () => {
-    const mockMessages: Message[] = [
-      { id: '1', content: 'Test message', partnerId: '1', createdAt: new Date() }
+    const mockMessages: IMessage[] = [
+      { id: '1', content: 'Test message', partnerId: '1', timestamp: new Date(), status: 'PENDING' }
     ];
 
     service.getMessagesByPartner('1').subscribe(messages => {

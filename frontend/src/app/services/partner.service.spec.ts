@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import {HttpTestingController } from '@angular/common/http/testing';
 import { PartnerService } from './partner.service';
-import { Partner } from './partner.service';
+import { IPartner } from '@shared/interfaces/partner.interface';
 
 describe('PartnerService', () => {
   let service: PartnerService;
@@ -25,9 +25,9 @@ describe('PartnerService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get all partners', () => {
-    const mockPartners: Partner[] = [
-      { id: '1', name: 'Test Partner', email: 'test@example.com', createdAt: new Date() }
+  it('should get all partners', () => { 
+    const mockPartners: IPartner[] = [
+      { id: '1', alias: 'Test Partner', type: 'INBOUND', direction: 'INBOUND', application: 'Test Partner', processed_flow_type: 'MESSAGE', description: 'Test Partner' }
     ];
 
     service.getAllPartners().subscribe(partners => {
@@ -40,11 +40,14 @@ describe('PartnerService', () => {
   });
 
   it('should get partner by id', () => {
-    const mockPartner: Partner = {
+    const mockPartner: IPartner = {
       id: '1',
-      name: 'Test Partner',
-      email: 'test@example.com',
-      createdAt: new Date()
+      alias: 'Test Partner',
+      type: 'INBOUND',
+      direction: 'INBOUND',
+      application: 'Test Partner',
+      processed_flow_type: 'MESSAGE',
+      description: 'Test Partner'
     };
 
     service.getPartnerById('1').subscribe(partner => {
@@ -57,15 +60,24 @@ describe('PartnerService', () => {
   });
 
   it('should create a partner', () => {
-    const newPartner = {
-      name: 'New Partner',
-      email: 'new@example.com'
+    const newPartner: IPartner = {
+      id: '1',
+      alias: 'New Partner',
+      type: 'INBOUND',
+      direction: 'INBOUND',
+      application: 'New Partner',
+      processed_flow_type: 'MESSAGE',
+      description: 'New Partner'
     };
 
-    const mockPartner: Partner = {
+    const mockPartner: IPartner = {
       id: '1',
-      ...newPartner,
-      createdAt: new Date()
+      alias: 'New Partner',
+      type: 'INBOUND',
+      direction: 'INBOUND',
+      application: 'New Partner',
+      processed_flow_type: 'MESSAGE',
+      description: 'New Partner'
     };
 
     service.createPartner(newPartner).subscribe(partner => {

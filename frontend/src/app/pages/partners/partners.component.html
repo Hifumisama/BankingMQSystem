@@ -2,13 +2,24 @@
   <!-- Header avec fond dégradé -->
   <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
     <div class="container mx-auto px-4 py-8">
-      <h1 class="text-3xl font-bold mb-2">Partenaires</h1>
-      <p class="text-blue-100">Gérez et consultez tous vos partenaires</p>
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold mb-2">Partenaires</h1>
+          <p class="text-blue-100">Gérez et consultez tous vos partenaires</p>
+        </div>
+        <app-button class="text-3xl font-bold px-4 py-8"
+      theme="secondary"
+      size="large"
+      (clicked)="openModal()"
+    >
+      Ajouter un partenaire
+    </app-button>
+      </div>
     </div>
   </header>
-
   <!-- Contenu principal -->
   <div class="container mx-auto px-4 py-8">
+
     <!-- Statistiques -->
     <div class="mb-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -25,6 +36,14 @@
     </div>
 
     <!-- Liste des partenaires -->
-    <app-partners-list [partners]="partners"></app-partners-list>
+    <div class="bg-white rounded-lg shadow">
+      <app-partners-list [partners]="partners"></app-partners-list>
+    </div>
+
+    <app-partner-modal
+      [isOpen]="isModalOpen"
+      (close)="closeModal()"
+      (createPartner)="onCreatePartner($event)"
+    ></app-partner-modal>
   </div>
 </div>
