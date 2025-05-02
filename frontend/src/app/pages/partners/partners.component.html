@@ -1,1 +1,30 @@
-<p>partners works!</p>
+<div class="min-h-screen bg-gray-50">
+  <!-- Header avec fond dégradé -->
+  <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-2">Partenaires</h1>
+      <p class="text-blue-100">Gérez et consultez tous vos partenaires</p>
+    </div>
+  </header>
+
+  <!-- Contenu principal -->
+  <div class="container mx-auto px-4 py-8">
+    <!-- Statistiques -->
+    <div class="mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-semibold text-gray-800">Statistiques</h2>
+          <div class="mt-4">
+            <div class="text-center">
+              <p class="text-3xl font-bold text-blue-600">{{ totalPartners }}</p>
+              <p class="text-gray-600">Partenaires</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des partenaires -->
+    <app-partners-list [partners]="partners"></app-partners-list>
+  </div>
+</div>
