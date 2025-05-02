@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PartnerModalComponent } from './partner-modal.component';
-import { FormsModule, NgForm } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IPartner } from '@shared/interfaces/partner.interface';
 
 describe('PartnerModalComponent', () => {
@@ -11,12 +11,13 @@ describe('PartnerModalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         PartnerModalComponent,
-        FormsModule
+        ReactiveFormsModule
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PartnerModalComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -24,38 +25,24 @@ describe('PartnerModalComponent', () => {
   });
 
   it('should have default values', () => {
-    expect(component.isOpen).toBeFalse();
-    expect(component.formData).toEqual({
-      alias: '',
-      type: '',
-      direction: 'INBOUND',
-      application: '',
-      processed_flow_type: 'MESSAGE',
-      description: ''
-    });
+    expect(component.isOpen).toBe(false);
+    expect(component.partnerForm.get('alias')?.value).toBe('');
+    expect(component.partnerForm.get('type')?.value).toBe('');
+    expect(component.partnerForm.get('direction')?.value).toBe('INBOUND');
+    expect(component.partnerForm.get('application')?.value).toBe('');
+    expect(component.partnerForm.get('processed_flow_type')?.value).toBe('MESSAGE');
+    expect(component.partnerForm.get('description')?.value).toBe('');
   });
 
   it('should emit close event', () => {
-    spyOn(component.close, 'emit');
+    const closeSpy = jest.spyOn(component.close, 'emit');
     
     component.onClose();
     
-    expect(component.close.emit).toHaveBeenCalled();
-    expect(component.formData).toEqual({
-      alias: '',
-      type: '',
-      direction: 'INBOUND',
-      application: '',
-      processed_flow_type: 'MESSAGE',
-      description: ''
-    });
+    expect(closeSpy).toHaveBeenCalled();
   });
 
   it('should emit createPartner event with form data when form is valid', () => {
-    const mockForm = {
-      valid: true
-    } as NgForm;
-
     const expectedPartnerData: Omit<IPartner, 'id' | 'createdAt'> = {
       alias: 'Test Partner',
       type: 'INBOUND',
@@ -65,43 +52,20 @@ describe('PartnerModalComponent', () => {
       description: 'Test Description'
     };
 
-    component.formData = { ...expectedPartnerData };
-    spyOn(component.createPartner, 'emit');
+    component.partnerForm.patchValue(expectedPartnerData);
+    const createPartnerSpy = jest.spyOn(component.createPartner, 'emit');
     
-    component.onSubmit(mockForm);
+    component.onSubmit();
     
-    expect(component.createPartner.emit).toHaveBeenCalledWith(expectedPartnerData);
-    expect(component.formData).toEqual({
-      alias: '',
-      type: '',
-      direction: 'INBOUND',
-      application: '',
-      processed_flow_type: 'MESSAGE',
-      description: ''
-    });
+    expect(createPartnerSpy).toHaveBeenCalledWith(expectedPartnerData);
   });
 
   it('should not emit createPartner event when form is invalid', () => {
-    const mockForm = {
-      valid: false
-    } as NgForm;
-
-    const expectedPartnerData: Omit<IPartner, 'id' | 'createdAt'> = {
-      alias: 'Test Partner',
-      type: 'INBOUND',
-      direction: 'INBOUND',
-      application: 'Test App',
-      processed_flow_type: 'MESSAGE',
-      description: 'Test Description'
-    };
-
-    component.formData = { ...expectedPartnerData };
-    spyOn(component.createPartner, 'emit');
+    const createPartnerSpy = jest.spyOn(component.createPartner, 'emit');
     
-    component.onSubmit(mockForm);
+    component.onSubmit();
     
-    expect(component.createPartner.emit).not.toHaveBeenCalled();
-    expect(component.formData).toEqual(expectedPartnerData);
+    expect(createPartnerSpy).not.toHaveBeenCalled();
   });
 
   it('should have correct direction options', () => {

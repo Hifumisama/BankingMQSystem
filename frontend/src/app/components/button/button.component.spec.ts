@@ -21,7 +21,7 @@ describe('ButtonComponent', () => {
   it('should have default values', () => {
     expect(component.theme).toBe('primary');
     expect(component.size).toBe('large');
-    expect(component.disabled).toBeFalse();
+    expect(component.disabled).toBe(false);
     expect(component.type).toBe('button');
   });
 

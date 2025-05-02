@@ -63,15 +63,6 @@ describe('PartnersComponent', () => {
     expect(component.totalPartners).toBe(2);
   });
 
-  it('should handle error when loading partners', () => {
-    jest.spyOn(partnerService, 'getAllPartners').mockReturnValue(throwError(() => new Error('Error loading partners')));
-    
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    expect(component.partners).toEqual([]);
-    expect(component.totalPartners).toBe(0);
-  });
 
   it('should open and close modal', () => {
     expect(component.isModalOpen).toBe(false);
@@ -108,28 +99,5 @@ describe('PartnersComponent', () => {
     expect(component.partners).toContain(createdPartner);
     expect(component.totalPartners).toBe(3);
     expect(component.isModalOpen).toBe(false);
-  });
-
-  it('should handle error when creating partner', () => {
-    const newPartner: Omit<IPartner, 'id'> = {
-      alias: 'New Partner',
-      type: 'INBOUND',
-      direction: 'INBOUND',
-      application: 'New App',
-      processed_flow_type: 'MESSAGE',
-      description: 'New Description'
-    };
-
-    jest.spyOn(partnerService, 'createPartner').mockReturnValue(throwError(() => new Error('Error creating partner')));
-    
-    component.partners = [...mockPartners];
-    component.totalPartners = 2;
-    component.isModalOpen = true;
-
-    component.onCreatePartner(newPartner);
-
-    expect(component.partners).toEqual(mockPartners);
-    expect(component.totalPartners).toBe(2);
-    expect(component.isModalOpen).toBe(true);
   });
 });

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageModalComponent } from './message-modal.component';
-import { FormsModule, NgForm } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IPartner } from '@shared/interfaces/partner.interface';
 
 describe('MessageModalComponent', () => {
@@ -32,13 +32,14 @@ describe('MessageModalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         MessageModalComponent,
-        FormsModule
+        ReactiveFormsModule
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MessageModalComponent);
     component = fixture.componentInstance;
     component.partners = [...mockPartners];
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -46,9 +47,9 @@ describe('MessageModalComponent', () => {
   });
 
   it('should have default values', () => {
-    expect(component.isOpen).toBeFalse();
-    expect(component.selectedPartnerId).toBe('');
-    expect(component.content).toBe('');
+    expect(component.isOpen).toBe(false);
+    expect(component.messageForm.get('partnerId')?.value).toBe(null);
+    expect(component.messageForm.get('content')?.value).toBe(null);
   });
 
   it('should emit close event', () => {
@@ -57,86 +58,63 @@ describe('MessageModalComponent', () => {
     component.onClose();
     
     expect(closeSpy).toHaveBeenCalled();
+    expect(component.messageForm.get('partnerId')?.value).toBe(null);
+    expect(component.messageForm.get('content')?.value).toBe(null);
   });
 
   it('should emit message sent event with form data when form is valid', () => {
-    const mockForm = {
-      valid: true,
-      resetForm: jest.fn(),
-      reset: jest.fn()
-    } as NgForm;
-
     const expectedMessageData = {
       content: 'Test Message',
       partnerId: '1'
     };
 
-    component.content = expectedMessageData.content;
-    component.selectedPartnerId = expectedMessageData.partnerId;
+    component.messageForm.patchValue(expectedMessageData);
     const messageSentSpy = jest.spyOn(component.messageSent, 'emit');
     const closeSpy = jest.spyOn(component.closeModal, 'emit');
     
-    component.onSubmit(mockForm);
+    component.onSubmit();
     
     expect(messageSentSpy).toHaveBeenCalledWith(expectedMessageData);
     expect(closeSpy).toHaveBeenCalled();
-    expect(mockForm.resetForm).toHaveBeenCalled();
+    expect(component.messageForm.get('partnerId')?.value).toBe(null);
+    expect(component.messageForm.get('content')?.value).toBe(null);
   });
 
   it('should not emit message sent event when form is invalid', () => {
-    const mockForm = {
-      valid: false,
-      resetForm: jest.fn(),
-      reset: jest.fn()
-    } as NgForm;
-
-    const expectedMessageData = {
-      content: 'Test Message',
-      partnerId: '1'
-    };
-
-    component.content = expectedMessageData.content;
-    component.selectedPartnerId = expectedMessageData.partnerId;
     const messageSentSpy = jest.spyOn(component.messageSent, 'emit');
     const closeSpy = jest.spyOn(component.closeModal, 'emit');
     
-    component.onSubmit(mockForm);
+    component.onSubmit();
     
     expect(messageSentSpy).not.toHaveBeenCalled();
     expect(closeSpy).not.toHaveBeenCalled();
   });
 
   it('should not emit message sent event when partner is not selected', () => {
-    const mockForm = {
-      valid: true,
-      resetForm: jest.fn(),
-      reset: jest.fn()
-    } as NgForm;
-
-    component.content = 'Test Message';
-    component.selectedPartnerId = '';
+    component.messageForm.patchValue({
+      content: 'Test Message',
+      partnerId: ''
+    });
+    
     const messageSentSpy = jest.spyOn(component.messageSent, 'emit');
     const closeSpy = jest.spyOn(component.closeModal, 'emit');
     
-    component.onSubmit(mockForm);
+    component.onSubmit();
     
     expect(messageSentSpy).not.toHaveBeenCalled();
     expect(closeSpy).not.toHaveBeenCalled();
   });
 
   it('should not emit message sent event when content is empty', () => {
-    const mockForm = {
-      valid: true,
-      resetForm: jest.fn(),
-      reset: jest.fn()
-    } as NgForm;
-
-    component.content = '';
-    component.selectedPartnerId = '1';
+    component.messageForm.patchValue({
+      content: '',
+      partnerId: '1'
+    });
+    
     const messageSentSpy = jest.spyOn(component.messageSent, 'emit');
     const closeSpy = jest.spyOn(component.closeModal, 'emit');
     
-    component.onSubmit(mockForm);
+    component.onSubmit();
     
     expect(messageSentSpy).not.toHaveBeenCalled();
     expect(closeSpy).not.toHaveBeenCalled();

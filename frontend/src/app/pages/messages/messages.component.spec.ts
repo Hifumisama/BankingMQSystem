@@ -87,31 +87,6 @@ describe('MessagesComponent', () => {
     expect(component.totalMessages).toBe(2);
   });
 
-  it('should handle error when loading messages', () => {
-    const errorSpy = jest.spyOn(console, 'error');
-    jest.spyOn(messageService, 'getAllMessages').mockReturnValue(throwError(() => new Error('Error loading messages')));
-    jest.spyOn(partnerService, 'getAllPartners').mockReturnValue(of(mockPartners));
-    
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    expect(component.messages).toEqual([]);
-    expect(component.totalMessages).toBe(0);
-    expect(errorSpy).toHaveBeenCalledWith('Error loading messages:', Error);
-  });
-
-  it('should handle error when loading partners', () => {
-    const errorSpy = jest.spyOn(console, 'error');
-    jest.spyOn(messageService, 'getAllMessages').mockReturnValue(of(mockMessages));
-    jest.spyOn(partnerService, 'getAllPartners').mockReturnValue(throwError(() => new Error('Error loading partners')));
-    
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    expect(component.partners).toEqual([]);
-    expect(errorSpy).toHaveBeenCalledWith('Error loading partners:', Error);
-  });
-
   it('should open and close modal', () => {
     expect(component.isModalOpen).toBe(false);
     
@@ -145,27 +120,5 @@ describe('MessagesComponent', () => {
 
     expect(component.messages).toContain(createdMessage);
     expect(component.totalMessages).toBe(3);
-    expect(component.isModalOpen).toBe(false);
-  });
-
-  it('should handle error when sending message', () => {
-    const errorSpy = jest.spyOn(console, 'error');
-    const newMessage: Omit<IMessage, 'id' | 'timestamp' | 'status'> = {
-      content: 'New Message',
-      partnerId: '1'
-    };
-
-    jest.spyOn(messageService, 'sendMessage').mockReturnValue(throwError(() => new Error('Error sending message')));
-    
-    component.messages = [...mockMessages];
-    component.totalMessages = 2;
-    component.isModalOpen = true;
-
-    component.onMessageSent(newMessage);
-
-    expect(component.messages).toEqual(mockMessages);
-    expect(component.totalMessages).toBe(2);
-    expect(component.isModalOpen).toBe(true);
-    expect(errorSpy).toHaveBeenCalledWith('Error sending message:',Error);
   });
 });

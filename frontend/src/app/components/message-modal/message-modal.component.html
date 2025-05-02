@@ -13,7 +13,7 @@
     </div>
 
     <!-- Form -->
-    <form #messageForm="ngForm" (ngSubmit)="onSubmit(messageForm)" class="p-6">
+    <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="p-6">
       <!-- Partner Selection -->
       <div class="mb-4">
         <label for="partner" class="block text-sm font-medium text-gray-700 mb-1">
@@ -21,9 +21,7 @@
         </label>
         <select
           id="partner"
-          name="partner"
-          [(ngModel)]="selectedPartnerId"
-          required
+          formControlName="partnerId"
           class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">Sélectionnez un partenaire</option>
@@ -31,6 +29,10 @@
             {{ partner.alias }}
           </option>
         </select>
+        <div *ngIf="messageForm.get('partnerId')?.touched && messageForm.get('partnerId')?.errors?.['required']" 
+             class="text-red-500 text-sm mt-1">
+          Le partenaire est requis
+        </div>
       </div>
 
       <!-- Message Content -->
@@ -40,13 +42,15 @@
         </label>
         <textarea
           id="content"
-          name="content"
-          [(ngModel)]="content"
-          required
+          formControlName="content"
           rows="4"
           placeholder="Écrivez votre message ici..."
           class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
         ></textarea>
+        <div *ngIf="messageForm.get('content')?.touched && messageForm.get('content')?.errors?.['required']" 
+             class="text-red-500 text-sm mt-1">
+          Le message est requis
+        </div>
       </div>
 
       <!-- Footer -->

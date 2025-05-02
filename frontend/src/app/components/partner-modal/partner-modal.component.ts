@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IPartner } from '@shared/interfaces/partner.interface';
 
 @Component({
   selector: 'app-partner-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './partner-modal.component.html',
   styleUrl: './partner-modal.component.scss'
 })
@@ -15,14 +15,7 @@ export class PartnerModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() createPartner = new EventEmitter<Omit<IPartner, 'id' | 'createdAt'>>();
 
-  formData: Omit<IPartner, 'id' | 'createdAt'> = {
-    alias: '',
-    type: '',
-    direction: 'INBOUND',
-    application: '',
-    processed_flow_type: 'MESSAGE',
-    description: ''
-  };
+  partnerForm: FormGroup;
 
   directions = [
     { value: 'INBOUND', label: 'Entrant' },
@@ -35,9 +28,20 @@ export class PartnerModalComponent {
     { value: 'NOTIFICATION', label: 'Notification' }
   ];
 
-  onSubmit(form: NgForm) {
-    if (form.valid) {
-      this.createPartner.emit(this.formData);
+  constructor(private fb: FormBuilder) {
+    this.partnerForm = this.fb.group({
+      alias: ['', Validators.required],
+      type: ['', Validators.required],
+      direction: ['INBOUND', Validators.required],
+      application: ['', Validators.required],
+      processed_flow_type: ['MESSAGE', Validators.required],
+      description: ['', Validators.required]
+    });
+  }
+
+  onSubmit() {
+    if (this.partnerForm.valid) {
+      this.createPartner.emit(this.partnerForm.value);
       this.resetForm();
     }
   }
@@ -48,13 +52,9 @@ export class PartnerModalComponent {
   }
 
   private resetForm() {
-    this.formData = {
-      alias: '',
-      type: '',
+    this.partnerForm.reset({
       direction: 'INBOUND',
-      application: '',
-      processed_flow_type: 'MESSAGE',
-      description: ''
-    };
+      processed_flow_type: 'MESSAGE'
+    });
   }
 }
