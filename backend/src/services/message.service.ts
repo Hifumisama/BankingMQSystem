@@ -1,5 +1,6 @@
-import { Message, IMessage } from '../models/message.model';
+import { Message } from '../models/message.model';
 import { MQService } from './mq.service';
+import { IMessage } from '@shared/interfaces/message.interface';
 
 export class MessageService {
   private mqService: MQService;

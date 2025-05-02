@@ -1,15 +1,7 @@
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import { IPartner } from '@shared/interfaces/partner.interface';
 
-export interface IPartner {
-  id: string;
-  alias: string;
-  type: string;
-  direction: 'INBOUND' | 'OUTBOUND';
-  application: string;
-  processed_flow_type: 'MESSAGE' | 'ALERTING' | 'NOTIFICATION';
-  description: string;
-}
 
 const partnerSchema = new mongoose.Schema<IPartner>({
   id: { type: String, default: uuidv4, unique: true },

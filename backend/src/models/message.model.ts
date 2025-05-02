@@ -1,14 +1,6 @@
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-
-export interface IMessage {
-  id: string;
-  content: string;
-  partnerId: string;
-  timestamp: Date;
-  status: 'PENDING' | 'PROCESSED' | 'ERROR';
-  mqMessageId?: string; // ID du message dans IBM MQ
-}
+import { IMessage } from '@shared/interfaces/message.interface';
 
 const messageSchema = new mongoose.Schema<IMessage>({
   id: { type: String, default: uuidv4, unique: true },

@@ -1,4 +1,5 @@
-import { Partner, IPartner } from '../models/partner.model';
+import { Partner } from '../models/partner.model';
+import { IPartner } from '@shared/interfaces/partner.interface';
 
 export class PartnerService {
   /**
