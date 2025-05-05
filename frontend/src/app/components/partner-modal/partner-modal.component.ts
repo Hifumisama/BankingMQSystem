@@ -7,8 +7,7 @@ import { IPartner } from '@shared/interfaces/partner.interface';
   selector: 'app-partner-modal',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './partner-modal.component.html',
-  styleUrl: './partner-modal.component.scss'
+  templateUrl: './partner-modal.component.html'
 })
 export class PartnerModalComponent {
   @Input() isOpen: boolean = false;
